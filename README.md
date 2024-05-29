@@ -56,7 +56,8 @@ DestroyItemWhenBroken = true
 UpdateExistingShards = true
 
 ```
-###Credit
+
+### Credit
 
 This mod idea was suggested by [@Bromelda](https://ideas.vrisingmods.com/posts/112/shard-replenish-mod) on our community idea tracker. Please vote and suggest your ideas [here](https://ideas.vrisingmods.com/).
 
