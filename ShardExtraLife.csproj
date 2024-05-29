@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>ShardExtraLife</AssemblyName>
+    <Description>Control Life time for Shard.</Description>
+    <Version>0.1.8</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>ShardExtraLife</RootNamespace>
+    <AssemblyVersion>0.1.8.0</AssemblyVersion>
+    <FileVersion>0.1.8.0</FileVersion>
+    <InformationalVersion>0.1.8+1.Branch.main.Sha.4435243bd013dc988e1f142db6f6cf5c889d1a5e</InformationalVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.690" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.690" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+    <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.*" />
+    <PackageReference Include="VRising.VampireCommandFramework" Version="0.9.*" />
+  </ItemGroup>
+  <Target Name="CopyDLLs" AfterTargets="Build">
+    <Message Text="DLL to V Rising Server" Importance="High" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="E:\SteamLibrary\steamapps\common\VRisingDedicatedServer\BepInEx\plugins" />
+    <Message Text="DLL Copied OK" Importance="High" />
+  </Target>
+</Project>
