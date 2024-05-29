@@ -37,7 +37,6 @@ namespace ShardExtraLife
         {         
             ShardExtraLife.InitData();
             ShardExtraLife.ChangeLifeTime();
-            ModLoop.Initialize();
             ShardExtraLife.UpdateShardslist();
         }
 

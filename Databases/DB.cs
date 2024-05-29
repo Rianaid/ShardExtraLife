@@ -22,14 +22,14 @@ namespace ShardExtraLife.Databases
     {
         internal static ConcurrentDictionary<RelicType, ItemsData> ShardsData = new ConcurrentDictionary<RelicType, ItemsData>();
         internal static List<PrefabGUID> ShardPrefabs = new List<PrefabGUID>();
-        internal static bool ModEnabled = true;
+        internal static bool UpdateExistingShards = true;
         internal static bool EnabledCommand = true;
         internal static int MaxShardAmountTheMonster = 5;
         internal static int MaxShardAmountSolarus = 5;
         internal static int MaxShardAmountWingedHorror = 5;
         internal static int MaxShardAmountDracula = 5;
-        internal static float TimeUntilBroken = 5400f;//129600
-        internal static float MaxDurability = 5400f;//2500
+        internal static float TimeUntilBroken = 129600f;//129600
+        internal static float MaxDurability = 2500f;//2500
         internal static bool DestroyItemWhenBroken = false;
         internal static List<string> ShardNames = new List<string>()
         {

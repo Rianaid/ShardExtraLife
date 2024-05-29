@@ -6,8 +6,8 @@ namespace ShardExtraLife.Configs
 {
     internal class MainConfig
     {
-        private static readonly string FileDirectory = Path.Combine("BepInEx", "config", "Rianaid's_mods");
-        private static readonly string FileName = "ShardExtraLife.json";
+        private static readonly string FileDirectory = Path.Combine("BepInEx", "config");
+        private static readonly string FileName = "ShardExtraLife.cfg";
         private static readonly string fullPath = Path.Combine(FileDirectory, FileName);
         private static readonly ConfigFile Conf = new ConfigFile(fullPath, true);
         public static ConfigEntry<float> TimeUntilBroken;
@@ -17,15 +17,17 @@ namespace ShardExtraLife.Configs
         public static ConfigEntry<int> MaxShardAmountTheMonster;
         public static ConfigEntry<int> MaxShardAmountWingedHorror;
         public static ConfigEntry<bool> DestroyItemWhenBroken;
+        public static ConfigEntry<bool> UpdateExistingShards;
         public static void SettingsInit()
         {
-            MaxShardAmountDracula = Conf.Bind("ShardExtraLife", "MaxShardAmountDracula", 5, "Maximum \"Dracula\" shard amount.");
-            MaxShardAmountSolarus = Conf.Bind("ShardExtraLife", "MaxShardAmountSolarus", 5, "Maximum \"Solarus\" shard amount.");
-            MaxShardAmountTheMonster = Conf.Bind("ShardExtraLife", "MaxShardAmountTheMonster", 5, "Maximum \"TheMonster\" shard amount.");
-            MaxShardAmountWingedHorror = Conf.Bind("ShardExtraLife", "MaxShardAmountWingedHorror", 5, "Maximum \"Winged Horror\" shard amount.");
-            MaxDurability = Conf.Bind("ShardExtraLife", "MaxDurability", 5400f, "Shard Max durability.");
-            TimeUntilBroken = Conf.Bind("ShardExtraLife", "TimeUntilBroken", 5400f, "Shard time before destroy.");
+            MaxShardAmountDracula = Conf.Bind("ShardExtraLife", "MaxShardAmountDracula", 1, "Maximum \"Dracula\" shard amount.");
+            MaxShardAmountSolarus = Conf.Bind("ShardExtraLife", "MaxShardAmountSolarus", 1, "Maximum \"Solarus\" shard amount.");
+            MaxShardAmountTheMonster = Conf.Bind("ShardExtraLife", "MaxShardAmountTheMonster", 1, "Maximum \"TheMonster\" shard amount.");
+            MaxShardAmountWingedHorror = Conf.Bind("ShardExtraLife", "MaxShardAmountWingedHorror", 1, "Maximum \"Winged Horror\" shard amount.");
+            MaxDurability = Conf.Bind("ShardExtraLife", "MaxDurability", 2500f, "Shard Max durability.");
+            TimeUntilBroken = Conf.Bind("ShardExtraLife", "TimeUntilBroken", 1296000f, "Shard time before destroy.");
             DestroyItemWhenBroken = Conf.Bind("ShardExtraLife", "DestroyItemWhenBroken", true, "Destroy shard when broken.");
+            UpdateExistingShards = Conf.Bind("ShardExtraLife", "UpdateExistingShards", true, "Update existing shards.");
             SettingsBind();
         }
         public static void SettingsBind()
@@ -37,6 +39,7 @@ namespace ShardExtraLife.Configs
             DB.TimeUntilBroken = TimeUntilBroken.Value;
             DB.MaxDurability = MaxDurability.Value;
             DB.DestroyItemWhenBroken = DestroyItemWhenBroken.Value;
+            DB.UpdateExistingShards = UpdateExistingShards.Value;
         }
     }
 }
