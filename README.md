@@ -2,7 +2,7 @@
 `Server side only` mod to change shards params like is: durability, time to break, destroy when broken and drop amount. 
 <details>
 <summary>Changelog</summary>
-`0.1.0`
+0.1.0
 - Initial public release of the mod
 </details>
 
