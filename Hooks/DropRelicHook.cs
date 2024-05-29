@@ -37,7 +37,11 @@ namespace ShardExtraLife.Hooks
             var entities = __instance.__query_1425231924_0.ToEntityArray(Allocator.Temp);
             foreach (var entity in entities)
             {
-                ShardExtraLife.removeShardFromlist(entity);
+                if (Helper.EntityManager.HasComponent<Relic>(entity))
+                {
+                    Helper.EntityCompomponentDumper("ModLogs/RelicDestroy.json", entity);
+                    ShardExtraLife.removeShardFromlist(entity);
+                }
             }
             ShardExtraLife.UpdateShardslist();
         }

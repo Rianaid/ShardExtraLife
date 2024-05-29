@@ -10,6 +10,7 @@ namespace ShardExtraLife.Commands
         {
             if (DB.EnabledCommand)
             {
+                ShardExtraLife.UpdateShardslist();
                 string message = "";
                 if (arg1 == null || string.IsNullOrEmpty(arg1))
                 {

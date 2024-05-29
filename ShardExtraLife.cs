@@ -17,6 +17,11 @@ namespace ShardExtraLife
             var query = Helper.Server.EntityManager.CreateEntityQuery(new EntityQueryDesc()
             { All = new ComponentType[] { ComponentType.ReadOnly<Relic>() }, Options = EntityQueryOptions.IncludeDisabled });
             var relicEntities = query.ToEntityArray(Allocator.Temp);
+            foreach (var key in DB.ShardsData.Keys)
+            {
+                DB.ShardsData[key].Entities.Clear();
+            }
+
 
             foreach (var entity in relicEntities)
             {
@@ -28,10 +33,6 @@ namespace ShardExtraLife
                 }
                 data.Count = data.Entities.Count;
                 DB.ShardsData[relicType] = data;
-            }
-            foreach (var key in DB.ShardsData.Keys)
-            {
-                var data = DB.ShardsData[key];
             }
             updateStatus();
         }
@@ -90,6 +91,7 @@ namespace ShardExtraLife
                     if (Helper.EntityManager.HasComponent<Durability>(entity))
                     {
                         var durability = Helper.EntityManager.GetComponentData<Durability>(entity);
+                        if (durability.Value == 0) { durability.Value = 15; }
                         durability.MaxDurability = DB.MaxDurability;
                         durability.DestroyItemWhenBroken = DB.DestroyItemWhenBroken;
                         Helper.EntityManager.SetComponentData(entity, durability);
