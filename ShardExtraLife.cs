@@ -73,6 +73,29 @@ namespace ShardExtraLife
                     }
                 }
             }
+            if (DB.UpdateExistingShards)
+            {
+                var query = Helper.Server.EntityManager.CreateEntityQuery(new EntityQueryDesc()
+                { All = new ComponentType[] { ComponentType.ReadOnly<Relic>() }, Options = EntityQueryOptions.IncludeDisabled });
+                var relicEntities = query.ToEntityArray(Allocator.Temp);
+
+                foreach (var entity in relicEntities)
+                {
+                    if (Helper.EntityManager.HasComponent<LoseDurabilityOverTime>(entity))
+                    {
+                        var losedurability = Helper.EntityManager.GetComponentData<LoseDurabilityOverTime>(entity);
+                        losedurability.TimeUntilBroken = DB.TimeUntilBroken;
+                        Helper.EntityManager.SetComponentData(entity, losedurability);
+                    }
+                    if (Helper.EntityManager.HasComponent<Durability>(entity))
+                    {
+                        var durability = Helper.EntityManager.GetComponentData<Durability>(entity);
+                        durability.MaxDurability = DB.MaxDurability;
+                        durability.DestroyItemWhenBroken = DB.DestroyItemWhenBroken;
+                        Helper.EntityManager.SetComponentData(entity, durability);
+                    }
+                }
+            }
         }
         public static void InitData()
         {

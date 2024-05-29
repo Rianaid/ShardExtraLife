@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>ShardExtraLife</AssemblyName>
     <Description>Control Shards params.</Description>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ShardExtraLife</RootNamespace>
@@ -18,6 +18,14 @@
   <Target Name="CopyDLLs" AfterTargets="Build">
     <Message Text="DLL to V Rising Server" Importance="High" />
     <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="E:\SteamLibrary\steamapps\common\VRisingDedicatedServer\BepInEx\plugins" />
+    <Message Text="DLL Copied OK" Importance="High" />
+  </Target>
+  <Target Name="CopyDLLs" AfterTargets="Build">
+    <Message Text="DLL to Thunderstore pack" Importance="High" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
+    <Copy SourceFiles="icon.png" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
+    <Copy SourceFiles="manifest.json" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
+    <Copy SourceFiles="README.md" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
     <Message Text="DLL Copied OK" Importance="High" />
   </Target>
 </Project>
