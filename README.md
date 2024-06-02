@@ -7,6 +7,10 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.1
+
+-Add check "RelicSpawnType" for ignore limits when RelicSpawnType = Plentiful.
+
 0.2.0 
 - All mod rework. 
 - Delete drop shard from VBlood Boss. 

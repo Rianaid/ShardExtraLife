@@ -37,6 +37,11 @@ namespace ShardExtraLife.Utils
             var prefabOld = NametoGuid[DB.OldShard[relicType]];
             var canDropNew = DB.NewShardsData[relicType].canDrop();
             var canDropOld = DB.OldShardsData[relicType].canDrop();
+            if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
+            {
+                canDropNew = true;
+                canDropOld = true;
+            }
             Randomizer(out var dropOld, out var dropNew);
             if (DB.DropNewShards && DB.DropOldShards)
             {

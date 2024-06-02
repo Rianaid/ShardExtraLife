@@ -11,6 +11,7 @@ namespace ShardExtraLife.Utils
     {
         private static World? _serverWorld;
         public static EntityManager EntityManager => Server.EntityManager;
+        public static ServerGameSettingsSystem serverGameSettings => Server.GetExistingSystemManaged<ServerGameSettingsSystem>();
         public static PrefabCollectionSystem PrefabCollectionSystem => Server.GetExistingSystemManaged<PrefabCollectionSystem>();
         public static World Server
         {

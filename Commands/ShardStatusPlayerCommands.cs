@@ -72,7 +72,14 @@ namespace ShardExtraLife.Commands
                             foreach (var type in DB.NewShardsData.Keys)
                             {
                                 var data = DB.NewShardsData[type];
-                                sb.AppendLine($"\t[{type}]: [{data.Count}/{data.MaxCount}]. Can drop: {data.Count < data.MaxCount} ");
+                                if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
+                                {
+                                    sb.AppendLine($"\t[{type}]: [{data.Count}]. Can drop: {data.Count < int.MaxValue} ");
+                                }
+                                else
+                                {
+                                    sb.AppendLine($"\t[{type}]: [{data.Count}/{data.MaxCount}]. Can drop: {data.Count < data.MaxCount} ");
+                                }
                             }
                             ctx.Reply(sb.ToString());
                             sb.Clear();
@@ -92,7 +99,7 @@ namespace ShardExtraLife.Commands
                             sb.Clear();
 
                         }
-                        if (DB.DropNewShards && DB.DropOldShards)
+                        if (DB.DropNewShards && DB.DropOldShards&&!DB.DropNewAndOldShardTogether)
                         {
                             ctx.Reply($"Server drop chance: New [{DB.ChanceDropNewShard * 100:F2}%]; Old [{DB.ChanceDropOldShard * 100:F2}%]");
                         }

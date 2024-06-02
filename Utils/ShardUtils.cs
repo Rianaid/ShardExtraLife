@@ -50,8 +50,6 @@ namespace ShardExtraLife.Utils
                     data.Count = data.Entities.Count;
                     DB.NewShardsData[relicType] = data;
                 }
-
-
             }
             updateStatus();
         }
@@ -176,9 +174,16 @@ namespace ShardExtraLife.Utils
                 bool status = (Newdata.Count < Newdata.MaxCount) || (OldData.Count < OldData.MaxCount);
                 var relicdrop = Helper.EntityManager.GetBuffer<RelicDropped>(relicEntity);
                 var rd = relicdrop[(int)relic];
-                if (rd.Value == status)
+                if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
                 {
-                    relicdrop[(int)relic] = new RelicDropped() { Value = !status };
+                    relicdrop[(int)relic] = new RelicDropped() { Value = true};
+                }
+                else
+                {
+                    if (rd.Value == status)
+                    {
+                        relicdrop[(int)relic] = new RelicDropped() { Value = !status };
+                    }
                 }
             }
         }
