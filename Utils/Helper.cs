@@ -25,7 +25,6 @@ namespace ShardExtraLife.Utils
         }
         public static bool IsServer => Application.productName == "VRisingServer";
 
-
         private static World GetWorld(string name)
         {
             foreach (var world in World.s_AllWorlds)

@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>ShardExtraLife</AssemblyName>
     <Description>Control Shards params.</Description>
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ShardExtraLife</RootNamespace>
@@ -17,7 +17,7 @@
     <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.690" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.Core" Version="6.0.0-be.690" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.*" />
+    <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.5.802350001" />
     <PackageReference Include="VRising.VampireCommandFramework" Version="0.9.*" />
   </ItemGroup>
   <Target Name="CopyDLLs" AfterTargets="Build">
