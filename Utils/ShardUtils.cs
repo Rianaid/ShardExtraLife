@@ -171,12 +171,32 @@ namespace ShardExtraLife.Utils
             {
                 var Newdata = DB.NewShardsData[relic];
                 var OldData = DB.OldShardsData[relic];
-                bool status = (Newdata.Count < Newdata.MaxCount) || (OldData.Count < OldData.MaxCount);
+                if (relic == RelicType.Dracula)
+                {
+                    OldData.MaxCount = -1;
+                }
+                bool status = true;
+                if (DB.DropNewShards && DB.DropOldShards)
+                {
+                    status = (Newdata.Count < Newdata.MaxCount) || (OldData.Count < OldData.MaxCount);
+                }
+                else if (!DB.DropNewShards && DB.DropOldShards)
+                {
+                    status = OldData.Count < OldData.MaxCount;
+                }
+                else if (DB.DropNewShards && !DB.DropOldShards)
+                {
+                    status = Newdata.Count < Newdata.MaxCount;
+                }
+                else
+                {
+                    status = false;
+                }
                 var relicdrop = Helper.EntityManager.GetBuffer<RelicDropped>(relicEntity);
                 var rd = relicdrop[(int)relic];
                 if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
                 {
-                    relicdrop[(int)relic] = new RelicDropped() { Value = true};
+                    relicdrop[(int)relic] = new RelicDropped() { Value = true };
                 }
                 else
                 {

@@ -7,6 +7,10 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.2
+
+-Fix check "CanDropShard" for shard icon on boss. The shard icon is not displayed on the boss because the feature does not update the shard data correctly.
+
 0.2.1
 
 -Add check "RelicSpawnType" for ignore limits when RelicSpawnType = Plentiful.
@@ -197,8 +201,13 @@ TimeUntilBroken = 1296000
 
 ## Shard recovery multiplier. Currently the timer runs every 60 seconds.
 # Setting type: Single
-# Default value: 1.01
-RepairMultiplier = 1.01
+# Default value: 1
+RepairMultiplier = 1
+
+## Additional durability points for shards during repairs. Currently the timer runs every 60 seconds.
+# Setting type: Single
+# Default value: 1
+AdditionalRepairPoints = 1
 
 ## Enable repair shard in special pedestal.
 # Setting type: Boolean

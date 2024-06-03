@@ -46,6 +46,7 @@ namespace ShardExtraLife.Databases
         internal static float LifeTimeOldShard = 5400f;//5400
         internal static float RepairMultiplier = 1.01f; // +1%
         internal static bool EnabledRepairInAltar = true;
+        internal static float AdditionalRepairPoints = 1f;
         //--------Commands------------
         internal static bool EnabledEditAmountCommand = true;
         internal static bool EnabledEditChanceCommand = true;

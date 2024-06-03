@@ -99,7 +99,7 @@ namespace ShardExtraLife.Commands
                             sb.Clear();
 
                         }
-                        if (DB.DropNewShards && DB.DropOldShards&&!DB.DropNewAndOldShardTogether)
+                        if (DB.DropNewShards && DB.DropOldShards && !DB.DropNewAndOldShardTogether)
                         {
                             ctx.Reply($"Server drop chance: New [{DB.ChanceDropNewShard * 100:F2}%]; Old [{DB.ChanceDropOldShard * 100:F2}%]");
                         }

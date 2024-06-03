@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>ShardExtraLife</AssemblyName>
     <Description>Control Shards params.</Description>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ShardExtraLife</RootNamespace>
@@ -14,20 +14,20 @@
     <None Remove="Thunderstore\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.690" IncludeAssets="compile" />
-    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.690" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.691" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.691" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.5.802350001" />
+    <PackageReference Include="VRising.Unhollowed.Client" Version="1.0.5.802790001" />
     <PackageReference Include="VRising.VampireCommandFramework" Version="0.9.*" />
   </ItemGroup>
   <Target Name="CopyDLLs" AfterTargets="Build">
     <Message Text="DLL to V Rising Server" Importance="High" />
     <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="E:\SteamLibrary\steamapps\common\VRisingDedicatedServer\BepInEx\plugins" />
     <Message Text="DLL to Thunderstore pack" Importance="High" />
-    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
-    <Copy SourceFiles="icon.png" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
-    <Copy SourceFiles="manifest.json" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
-    <Copy SourceFiles="README.md" DestinationFolder="D:\Source\Vrising-1.0\ShardExtraLife\Thunderstore\$(Version)" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="D:\Source\Thunderstore\$(ProjectName)\$(Version)" />
+    <Copy SourceFiles="icon.png" DestinationFolder="D:\Source\Thunderstore\$(ProjectName)\$(Version)" />
+    <Copy SourceFiles="manifest.json" DestinationFolder="D:\Source\Thunderstore\$(ProjectName)\$(Version)" />
+    <Copy SourceFiles="README.md" DestinationFolder="D:\Source\Thunderstore\$(ProjectName)\$(Version)" />
     <Message Text="DLL Copied OK" Importance="High" />
   </Target>
 </Project>

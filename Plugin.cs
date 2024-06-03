@@ -39,7 +39,6 @@ namespace ShardExtraLife
             BaseLoop.Initialize();
             ShardDropper.ClearDropTable();
             ShardUtils.ChangeLifeTime();
-            ShardUtils.UpdateShardslist();
         }
         public override bool Unload()
         {

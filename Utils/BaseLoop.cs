@@ -17,7 +17,8 @@ namespace ShardExtraLife.Utils
     {
         private static BaseLoop _instance;
         public static DateTime lastRepair = DateTime.Now;
-
+        public static DateTime LastUpdate = DateTime.Now;
+        internal static bool NeedUpdateShardList = true;
 
         void Update()
         {
@@ -26,6 +27,26 @@ namespace ShardExtraLife.Utils
         void Start()
         {
             StartCoroutine(UpdateDurabilityInSpecialStorage().WrapToIl2Cpp());
+            StartCoroutine(UpdateShardsList().WrapToIl2Cpp());
+        }
+        private IEnumerator UpdateShardsList()
+        {
+            while (true)
+            {
+                var timespan = DateTime.Now - LastUpdate;
+                if (timespan.TotalSeconds > 300) { NeedUpdateShardList = true; }
+                if (NeedUpdateShardList)
+                {
+                    ShardUtils.UpdateShardslist();
+                    LastUpdate = DateTime.Now;
+                    NeedUpdateShardList = false;
+                }
+                else
+                {
+                    ShardUtils.updateStatus();
+                }
+                yield return new WaitForSeconds(15);
+            }
         }
         private IEnumerator UpdateDurabilityInSpecialStorage()
         {
@@ -66,12 +87,13 @@ namespace ShardExtraLife.Utils
                         var durability = Helper.EntityManager.GetComponentData<Durability>(entity);
                         var losedurability = Helper.EntityManager.GetComponentData<LoseDurabilityOverTime>(entity);
                         var repairValue = durability.MaxDurability / losedurability.TimeUntilBroken * (float)timeSpan.TotalSeconds;
-                        durability.Value += repairValue * DB.RepairMultiplier;
+                        durability.Value += (repairValue * DB.RepairMultiplier) + DB.AdditionalRepairPoints;
                         if (durability.Value > durability.MaxDurability) { durability.Value = durability.MaxDurability; }
                         Helper.EntityManager.SetComponentData(entity, durability);
                     }
                     ListSoulShardRepair = null;
                 }
+
                 yield return new WaitForSeconds(60);
             }
         }

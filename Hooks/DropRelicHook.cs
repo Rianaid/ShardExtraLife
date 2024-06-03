@@ -13,7 +13,6 @@ namespace ShardExtraLife.Hooks
         public static void postfix(DropItemThrowSystem __instance)
         {
             var RelicsQuery = __instance.__query_2070481711_0.ToEntityArray(Allocator.Temp);
-            bool NeedUpdate = false;
             foreach (var item in RelicsQuery)
             {
                 if (Helper.EntityManager.HasComponent<DropItemAroundPosition>(item))
@@ -23,15 +22,14 @@ namespace ShardExtraLife.Hooks
                     var name = Helper.PrefabCollectionSystem.PrefabGuidToNameDictionary[prefab];
                     if (DB.NewShardNames.Contains(name) || DB.OldShardName.Contains(name))
                     {
-                        NeedUpdate = true;
+                        BaseLoop.NeedUpdateShardList = true;
                     }
                 }
             }
             RelicsQuery.Dispose();
-            if (NeedUpdate) { ShardUtils.UpdateShardslist(); }
         }
     }
-    [HarmonyPatch(typeof(ItemPickupSystem), nameof(ItemPickupSystem.OnUpdate))]
+    /*[HarmonyPatch(typeof(ItemPickupSystem), nameof(ItemPickupSystem.OnUpdate))]
     public class ItemPickupSystem_patch
     {
         [HarmonyPostfix]
@@ -40,7 +38,7 @@ namespace ShardExtraLife.Hooks
            // ShardUtils.UpdateShardslist();
         }
     }
-
+    */
     [HarmonyPatch(typeof(RelicDestroySystem), nameof(RelicDestroySystem.OnUpdate))]
     public class RelicDestroySystem_patch
     {
@@ -48,16 +46,14 @@ namespace ShardExtraLife.Hooks
         public static void postfix(RelicDestroySystem __instance)
         {
             var RelicsQuery = __instance._RelicsQuery.ToEntityArray(Allocator.Temp);
-            bool NeedUpdate = false;
             foreach (var item in RelicsQuery)
             {
                 if (Helper.EntityManager.HasComponent<Relic>(item))
                 {
-                    NeedUpdate = true;
+                    BaseLoop.NeedUpdateShardList = true;
                 }
             }
             RelicsQuery.Dispose();
-            if (NeedUpdate) { ShardUtils.UpdateShardslist(); }
         }
     }
 }

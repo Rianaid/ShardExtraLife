@@ -28,6 +28,7 @@ namespace ShardExtraLife.Configs
         public static ConfigEntry<float> MaxDurability;
         public static ConfigEntry<float> LifeTimeOldShard;
         public static ConfigEntry<float> RepairMultiplier;
+        public static ConfigEntry<float> AdditionalRepairPoints;
         public static ConfigEntry<bool> DestroyItemWhenBroken;
         public static ConfigEntry<bool> EnabledRepairInAltar;
         //--------ShardAmount----------
@@ -57,7 +58,8 @@ namespace ShardExtraLife.Configs
             MaxDurability = Conf.Bind("ShardExtraLife", "MaxDurability", 2500f, "Max durability for new shards.");
             LifeTimeOldShard = Conf.Bind("ShardExtraLife", "LifeTimeOldShard", 4200f, "Max lifetime for old shard.");
             TimeUntilBroken = Conf.Bind("ShardExtraLife", "TimeUntilBroken", 1296000f, "Shard time before destroy.");
-            RepairMultiplier = Conf.Bind("ShardExtraLife", "RepairMultiplier", 1.01f, "Shard recovery multiplier. Currently the timer runs every 60 seconds.");
+            RepairMultiplier = Conf.Bind("ShardExtraLife", "RepairMultiplier", 1f, "Shard recovery multiplier. Currently the timer runs every 60 seconds.");
+            AdditionalRepairPoints = Conf.Bind("ShardExtraLife", "AdditionalRepairPoints", 1f, "Additional durability points for shards during repairs. Currently the timer runs every 60 seconds.");
             EnabledRepairInAltar = Conf.Bind("ShardExtraLife", "EnabledRepairInAltar", true, "Enable repair shard in special pedestal.");
             DestroyItemWhenBroken = Conf.Bind("ShardExtraLife", "DestroyItemWhenBroken", true, "Enable destroy shard when broken.");
 
@@ -90,6 +92,7 @@ namespace ShardExtraLife.Configs
             DB.LifeTimeOldShard = LifeTimeOldShard.Value;
             DB.EnabledRepairInAltar = EnabledRepairInAltar.Value;
             DB.RepairMultiplier = RepairMultiplier.Value;
+            DB.AdditionalRepairPoints = AdditionalRepairPoints.Value;
             //--------ChanceDrop------------
             if (((ChanceDropNewShard.Value + ChanceDropOldShard.Value) > 1) && DropOldShards.Value && DropNewShards.Value)
             {
@@ -120,6 +123,10 @@ namespace ShardExtraLife.Configs
             TimeUntilBroken.Value = DB.TimeUntilBroken;
             MaxDurability.Value = DB.MaxDurability;
             LifeTimeOldShard.Value = DB.LifeTimeOldShard;
+            AdditionalRepairPoints.Value = DB.AdditionalRepairPoints;
+            EnabledRepairInAltar.Value = DB.EnabledRepairInAltar;
+            RepairMultiplier.Value = DB.RepairMultiplier;
+
             //--------ChanceDrop------------
             ChanceDropNewShard.Value = DB.ChanceDropNewShard;
             ChanceDropOldShard.Value = DB.ChanceDropOldShard;
