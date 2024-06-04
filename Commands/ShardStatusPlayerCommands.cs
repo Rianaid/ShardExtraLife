@@ -53,7 +53,7 @@ namespace ShardExtraLife.Commands
                                     sb.Clear();
                                     sb.AppendLine($"");
                                 }
-                                sb.AppendLine($"\t[{i + 1}]:[{shard}] [{name}] Durability: [{CurDurab}/{MaxDurab}]");
+                                sb.AppendLine($"\t[{i + 1}]: [{name}] Durability: [{CurDurab}/{MaxDurab}]");
                             }
                             ctx.Reply(sb.ToString());
                         }
@@ -69,9 +69,9 @@ namespace ShardExtraLife.Commands
                         {
                             sb.Clear();
                             sb.AppendLine($"New shard status:");
-                            foreach (var type in DB.NewShardsData.Keys)
+                            for (RelicTypeMod type = RelicTypeMod.TheMonster; type <= RelicTypeMod.Dracula; type++)
                             {
-                                var data = DB.NewShardsData[type];
+                                var data = DB.ShardsData[type];
                                 if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
                                 {
                                     sb.AppendLine($"\t[{type}]: [{data.Count}]. Can drop: {data.Count < int.MaxValue} ");
@@ -89,11 +89,17 @@ namespace ShardExtraLife.Commands
                         {
                             sb.Clear();
                             sb.AppendLine($"Old shard status:");
-                            foreach (var type in DB.OldShardsData.Keys)
+                            for (RelicTypeMod type = RelicTypeMod.OldTheMonster; type <= RelicTypeMod.OldBehemoth; type++)
                             {
-                                if (type == RelicType.Dracula) { continue; }
-                                var data = DB.OldShardsData[type];
-                                sb.AppendLine($"\t[{type}]: [{data.Count}/{data.MaxCount}]. Can drop: {data.Count < data.MaxCount} ");
+                                var data = DB.ShardsData[type];
+                                if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
+                                {
+                                    sb.AppendLine($"\t[{type}]: [{data.Count}]. Can drop: {data.Count < int.MaxValue} ");
+                                }
+                                else
+                                {
+                                    sb.AppendLine($"\t[{type}]: [{data.Count}/{data.MaxCount}]. Can drop: {data.Count < data.MaxCount} ");
+                                }
                             }
                             ctx.Reply(sb.ToString());
                             sb.Clear();
@@ -103,7 +109,7 @@ namespace ShardExtraLife.Commands
                         {
                             ctx.Reply($"Server drop chance: New [{DB.ChanceDropNewShard * 100:F2}%]; Old [{DB.ChanceDropOldShard * 100:F2}%]");
                         }
-                        else if (!DB.DropNewShards && DB.DropOldShards && DB.UseDropChanceForNewShard)
+                        else if (!DB.DropNewShards && DB.DropOldShards && DB.UseDropChanceForOldShard)
                         {
                             ctx.Reply($"Server drop chance: Old [{DB.ChanceDropOldShard * 100:F2}%]");
                         }
@@ -133,7 +139,7 @@ namespace ShardExtraLife.Commands
                 }
             }
             [Command("shardultimatereplace", shortHand: "sur", usage: "[.sel sur ?]", description: "Change replace ultimate option.", adminOnly: false)]
-            public static void ShardUltimateReplaceCommand(ChatCommandContext ctx, string where = "!")
+            public static void ShardUltimateReplaceCommand(ChatCommandContext ctx, string where = "?")
             {
                 if (DB.PlayerCommandEnabled)
                 {
@@ -184,10 +190,10 @@ namespace ShardExtraLife.Commands
                         switch (result)
                         {
                             case 0:
-                                ctx.Reply($"Replacing Utimate in your shard in equipment was successful. Please change the shard to apply the changes.");
+                                ctx.Reply($"Replacing Utimate in your shard in equipment and inventory was successful. Please change the shard to apply the changes.");
                                 break;
                             case 1:
-                                ctx.Reply($"You not have Shard in equipment for replace ultimate.");
+                                ctx.Reply($"You not have Shard in equipment and inventory for replace ultimate.");
                                 break;
                             default:
                                 ctx.Reply($"Incorrect result. Report mod devoloper. this bug!!");

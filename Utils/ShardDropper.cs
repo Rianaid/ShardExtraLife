@@ -1,4 +1,5 @@
 ﻿using ProjectM;
+using ProjectM.Network;
 using ProjectM.Shared;
 using ShardExtraLife.Databases;
 using Stunlock.Core;
@@ -16,35 +17,127 @@ namespace ShardExtraLife.Utils
         {
             InventoryUtilitiesServer.CreateDropItem(Helper.EntityManager, dropperEntity, prefabGUID, amount, default(Entity));
         }
-        public static void Randomizer(out bool dropOld, out bool dropNew)
+        public static void Randomizer(float chance1, float chance2, out bool drop1, out bool drop2, out double chance)
         {
-            dropOld = false;
-            dropNew = false;
-            var chance = random.NextDouble();
-            if (chance < DB.ChanceDropOldShard)
+            drop1 = false;
+            drop2 = false;
+            chance = random.NextDouble();
+            if (chance < chance1)
             {
-                dropOld = true;
+                drop1 = true;
             }
-            else if (chance < (DB.ChanceDropOldShard + DB.ChanceDropNewShard))
+            else if (chance < (chance1 + chance2))
             {
-                dropNew = true;
+                drop2 = true;
             }
         }
-        public static void ChoiceDropSystem(RelicType relicType, Entity DropperEntity)
+        public static void ChoiceDropSystem(RelicTypeMod relicTypeMod, DeathEvent deathEvent)
         {
+            var DropperEntity = deathEvent.Died;
+            var user = new User();
+            var CanSendMessage = false;
+            if (Helper.EntityManager.HasComponent<PlayerCharacter>(deathEvent.Killer) && DB.EnableSendMessages)
+            {
+                var userEntity = Helper.EntityManager.GetComponentData<PlayerCharacter>(deathEvent.Killer).UserEntity;
+                user = Helper.EntityManager.GetComponentData<User>(userEntity);
+                CanSendMessage = true;
+            }
             var NametoGuid = Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary;
-            var prefabNew = NametoGuid[DB.NewShard[relicType]];
-            var prefabOld = NametoGuid[DB.OldShard[relicType]];
-            var canDropNew = DB.NewShardsData[relicType].canDrop();
-            var canDropOld = DB.OldShardsData[relicType].canDrop();
+            var prefabNew = new PrefabGUID(0);
+            var prefabOld = new PrefabGUID(0);
+            var canDropNew = false;
+            var canDropOld = false;
+            var dropOld = false;
+            var dropNew = false;
+            var Plentiful = false;
             if (Helper.serverGameSettings.Settings.RelicSpawnType == RelicSpawnType.Plentiful)
             {
-                canDropNew = true;
-                canDropOld = true;
+                Plentiful = true;
             }
-            Randomizer(out var dropOld, out var dropNew);
-            if (DB.DropNewShards && DB.DropOldShards)
+            if (DB.UseDropChanceForNewShard && DB.UseDropChanceForOldShard)
             {
+                Randomizer(DB.ChanceDropOldShard, DB.ChanceDropNewShard, out dropOld, out dropNew, out var chance);
+            }
+            else if (!DB.UseDropChanceForNewShard && DB.UseDropChanceForOldShard)
+            {
+                Randomizer(DB.ChanceDropOldShard, DB.ChanceDropNewShard, out dropOld, out dropNew, out var chance);
+                dropNew = true;
+            }
+            else if (DB.UseDropChanceForNewShard && !DB.UseDropChanceForOldShard)
+            {
+                Randomizer(DB.ChanceDropOldShard, DB.ChanceDropNewShard, out dropOld, out dropNew, out var chance);
+                dropOld = true;
+            }
+            else
+            {
+
+                Randomizer(0.5f, 0.5f, out dropOld, out dropNew, out var chance);
+
+            }
+            if (relicTypeMod == RelicTypeMod.Dracula || relicTypeMod == RelicTypeMod.Solarus)
+            {
+                prefabNew = NametoGuid[DB.RelicModShards[relicTypeMod]];
+                if (Plentiful)
+                {
+                    canDropNew = true;
+                }
+                else
+                {
+                    canDropNew = DB.ShardsData[relicTypeMod].canDrop();
+                }
+                if (canDropNew && (dropOld || dropNew))
+                {
+                    DropShard(DropperEntity, prefabNew, 1);
+                }
+            }
+            else if (relicTypeMod == RelicTypeMod.OldBehemoth)
+            {
+                prefabOld = NametoGuid[DB.RelicModShards[relicTypeMod]];
+                if (Plentiful)
+                {
+                    canDropOld = true;
+                }
+                else
+                {
+                    canDropOld = DB.ShardsData[relicTypeMod].canDrop();
+                }
+                if (canDropOld && (dropOld || dropNew))
+                {
+                    DropShard(DropperEntity, prefabOld, 1);
+                }
+            }
+            else
+            {
+                if (relicTypeMod == RelicTypeMod.TheMonster)
+                {
+                    prefabNew = NametoGuid[DB.RelicModShards[RelicTypeMod.TheMonster]];
+                    prefabOld = NametoGuid[DB.RelicModShards[RelicTypeMod.OldTheMonster]];
+                    if (Plentiful)
+                    {
+                        canDropNew = true;
+                        canDropOld = true;
+                    }
+                    else
+                    {
+                        canDropNew = DB.ShardsData[RelicTypeMod.TheMonster].canDrop();
+                        canDropOld = DB.ShardsData[RelicTypeMod.OldTheMonster].canDrop();
+                    }
+                }
+                else
+                {
+                    prefabNew = NametoGuid[DB.RelicModShards[RelicTypeMod.WingedHorror]];
+                    prefabOld = NametoGuid[DB.RelicModShards[RelicTypeMod.OldWingedHorror]];
+                    if (Plentiful)
+                    {
+                        canDropNew = true;
+                        canDropOld = true;
+                    }
+                    else
+                    {
+                        canDropNew = DB.ShardsData[RelicTypeMod.WingedHorror].canDrop();
+                        canDropOld = DB.ShardsData[RelicTypeMod.OldWingedHorror].canDrop();
+                    }
+                }
                 if (DB.DropNewAndOldShardTogether)
                 {
                     if (canDropOld)
@@ -62,69 +155,40 @@ namespace ShardExtraLife.Utils
                     {
                         DropShard(DropperEntity, prefabOld, 1);
                     }
-                    if (dropNew && canDropNew)
+                    else if (dropNew && canDropNew)
                     {
                         DropShard(DropperEntity, prefabNew, 1);
                     }
-                }
-            }
-            else if (DB.DropNewShards && !DB.DropOldShards)
-            {
-                if (DB.UseDropChanceForNewShard)
-                {
-                    if (dropNew && canDropNew)
+                    else if (dropOld && !canDropOld && canDropNew)
                     {
                         DropShard(DropperEntity, prefabNew, 1);
                     }
-                    else
+                    else if (dropNew && !canDropNew && canDropOld)
                     {
-                        if (canDropNew)
+                        DropShard(DropperEntity, prefabOld, 1);
+                    }
+                    else if (!canDropNew && !canDropOld)
+                    {
+                        if (CanSendMessage)
                         {
-                            DropShard(DropperEntity, prefabNew, 1);
+                            ServerChatUtils.SendSystemMessageToClient(Helper.EntityManager, user, $"{DB.ReachShardLimit}");
+                        }
+                    }
+                    else if (!dropOld && !dropNew)
+                    {
+                        if (CanSendMessage)
+                        {
+                            ServerChatUtils.SendSystemMessageToClient(Helper.EntityManager, user, $"{DB.NoDropLucky}");
                         }
                     }
                 }
             }
-            else if (!DB.DropNewShards && DB.DropOldShards)
-            {
-                if (relicType == RelicType.Dracula)
-                {
-                    Plugin.Logger.LogWarning($"Dracula Shard can't drop because New Shards off.");
-                    return;
-                }
-                if (DB.UseDropChanceForOldShard)
-                {
-                    if (dropOld && canDropOld)
-                    {
-                        DropShard(DropperEntity, prefabOld, 1);
-                    }
-                }
-                else
-                {
-                    if (canDropOld)
-                    {
-                        DropShard(DropperEntity, prefabOld, 1);
-                    }
-                }
-            }
-            else
-            {
-                Plugin.Logger.LogWarning($"Shard dropper not active. Shards not droping!!!");
-            }
         }
-        internal static void AdminDropShards(ChatCommandContext ctx, int amount, RelicType relicType, bool oldShard)
+        internal static void AdminDropShards(ChatCommandContext ctx, int amount, RelicTypeMod relicType)
         {
             var NametoGuid = Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary;
-            var prefabNew = NametoGuid[DB.NewShard[relicType]];
-            var prefabOld = NametoGuid[DB.OldShard[relicType]];
-            if (oldShard)
-            {
-                DropShard(ctx.Event.SenderCharacterEntity, prefabOld, amount);
-            }
-            else
-            {
-                DropShard(ctx.Event.SenderCharacterEntity, prefabNew, amount);
-            }
+            var prefab = NametoGuid[DB.RelicModShards[relicType]];
+            DropShard(ctx.Event.SenderCharacterEntity, prefab, amount);
         }
         public static void ClearDropTable()
         {

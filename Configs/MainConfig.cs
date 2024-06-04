@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using ProjectM.Shared;
 using ShardExtraLife.Databases;
 using System.IO;
 
@@ -36,7 +35,7 @@ namespace ShardExtraLife.Configs
         public static ConfigEntry<int> MaxNewShardAmountSolarus;
         public static ConfigEntry<int> MaxNewShardAmountTheMonster;
         public static ConfigEntry<int> MaxNewShardAmountWingedHorror;
-        public static ConfigEntry<int> MaxOldShardAmountSolarus;
+        public static ConfigEntry<int> MaxOldShardAmountBehemoth;
         public static ConfigEntry<int> MaxOldShardAmountTheMonster;
         public static ConfigEntry<int> MaxOldShardAmountWingedHorror;
         //--------Commands------------
@@ -44,6 +43,11 @@ namespace ShardExtraLife.Configs
         public static ConfigEntry<bool> EnabledEditChanceCommand;
         public static ConfigEntry<bool> EnabledShardDropCommand;
         public static ConfigEntry<bool> PlayerCommandEnabled;
+        //--------Message------------
+        public static ConfigEntry<bool> EnableSendMessages;
+        public static ConfigEntry<string> ReachShardLimit;
+        public static ConfigEntry<string> NoDropLucky;
+
         public static void ConfigInit()
         {
             //--------ShardAmount----------
@@ -51,7 +55,7 @@ namespace ShardExtraLife.Configs
             MaxNewShardAmountSolarus = Conf.Bind("ShardAmount", "MaxShardAmountSolarus", 1, "Maximum new \"Solarus\" shard amount if drop new shards \"True\".");
             MaxNewShardAmountTheMonster = Conf.Bind("ShardAmount", "MaxShardAmountTheMonster", 1, "Maximum new \"TheMonster\" shard amount if drop new shards \"True\".");
             MaxNewShardAmountWingedHorror = Conf.Bind("ShardAmount", "MaxShardAmountWingedHorror", 1, "Maximum new \"Winged Horror\" shard amount if drop new shards \"True\".");
-            MaxOldShardAmountSolarus = Conf.Bind("ShardAmount", "MaxOldShardAmountSolarus", 1, "Maximum old \"Solarus\" shard amount if drop old shards \"True\".");
+            MaxOldShardAmountBehemoth = Conf.Bind("ShardAmount", "MaxOldShardAmountBehemoth", 1, "Maximum old \"Behemoth\" shard amount if drop old shards \"True\".");
             MaxOldShardAmountTheMonster = Conf.Bind("ShardAmount", "MaxOldShardAmountTheMonster", 1, "Maximum old \"TheMonster\" shard amount if drop old shards \"True\".");
             MaxOldShardAmountWingedHorror = Conf.Bind("ShardAmount", "MaxOldShardAmountWingedHorror", 1, "Maximum old \"Winged Horror\" shard amount if drop old shards \"True\".");
             //--------Durability------------
@@ -62,7 +66,6 @@ namespace ShardExtraLife.Configs
             AdditionalRepairPoints = Conf.Bind("ShardExtraLife", "AdditionalRepairPoints", 1f, "Additional durability points for shards during repairs. Currently the timer runs every 60 seconds.");
             EnabledRepairInAltar = Conf.Bind("ShardExtraLife", "EnabledRepairInAltar", true, "Enable repair shard in special pedestal.");
             DestroyItemWhenBroken = Conf.Bind("ShardExtraLife", "DestroyItemWhenBroken", true, "Enable destroy shard when broken.");
-
             //--------ChanceDrop------------
             ChanceDropNewShard = Conf.Bind("ShardChanceDrop", "ChanceDropNewShard", 0.5f, "Chance drop new shard.");
             ChanceDropOldShard = Conf.Bind("ShardChanceDrop", "ChanceDropOldShard", 0.5f, "Chance drop old shard.");
@@ -79,7 +82,10 @@ namespace ShardExtraLife.Configs
             DropNewShards = Conf.Bind("Params", "DropNewShards", true, "Enable Drop new shard.");
             DropOldShards = Conf.Bind("Params", "DropOldShards", true, "Enable drop old shard.");
             EnableUltimateReplace = Conf.Bind("Params", "EnableUltimateReplace", true, "Enable ultimate skill replace.");
-
+            //--------Message------------
+            EnableSendMessages = Conf.Bind("Message", "EnableSendMessages", true, "Enable send messages from mod.");
+            ReachShardLimit = Conf.Bind("Message", "ReachShardLimit", "The relic did not fall out. The limit on the number of relics [{relicTypeMod}] has been reached.", "No drop because reach limit.");
+            NoDropLucky = Conf.Bind("Message", "NoDropLucky", "You're out of luck this time. The relic did not fall out. Try once more.", "No lucky drop.");
             ConfigBind();
         }
         public static void ConfigBind()
@@ -113,6 +119,10 @@ namespace ShardExtraLife.Configs
             DB.UseDropChanceForNewShard = UseDropChanceForNewShard.Value;
             DB.UseDropChanceForOldShard = UseDropChanceForOldShard.Value;
             DB.DropNewAndOldShardTogether = DropNewAndOldShardTogether.Value;
+            //--------Message------------
+            DB.EnableSendMessages = EnableSendMessages.Value;
+            DB.ReachShardLimit = ReachShardLimit.Value;
+            DB.NoDropLucky = NoDropLucky.Value;
         }
         internal static void Save()
         {
@@ -136,8 +146,10 @@ namespace ShardExtraLife.Configs
             UseDropChanceForNewShard.Value = DB.UseDropChanceForNewShard;
             UseDropChanceForOldShard.Value = DB.UseDropChanceForOldShard;
             DropNewAndOldShardTogether.Value = DB.DropNewAndOldShardTogether;
-            EnabledRepairInAltar.Value = DB.EnabledRepairInAltar;
-            RepairMultiplier.Value = DB.RepairMultiplier;
+            //--------Message------------
+            EnableSendMessages.Value = DB.EnableSendMessages;
+            ReachShardLimit.Value = DB.ReachShardLimit;
+            NoDropLucky.Value = DB.NoDropLucky;
             //--------Commands------------
             EnabledEditAmountCommand.Value = DB.EnabledEditAmountCommand;
             EnabledEditChanceCommand.Value = DB.EnabledEditChanceCommand;
@@ -149,41 +161,33 @@ namespace ShardExtraLife.Configs
         public static void InitData()
         {
             int amount = 0;
-            for (RelicType type = RelicType.TheMonster; type <= RelicType.Dracula; type++)
+            for (RelicTypeMod type = RelicTypeMod.TheMonster; type <= RelicTypeMod.OldBehemoth; type++)
             {
-                if (type == RelicType.TheMonster) { amount = MaxNewShardAmountTheMonster.Value; }
-                if (type == RelicType.Solarus) { amount = MaxNewShardAmountSolarus.Value; }
-                if (type == RelicType.Dracula) { amount = MaxNewShardAmountDracula.Value; }
-                if (type == RelicType.WingedHorror) { amount = MaxNewShardAmountWingedHorror.Value; }
-                DB.NewShardsData.TryAdd(type, new ItemsData(0, amount));
+                if (type == RelicTypeMod.TheMonster) { amount = MaxNewShardAmountTheMonster.Value; }
+                if (type == RelicTypeMod.Solarus) { amount = MaxNewShardAmountSolarus.Value; }
+                if (type == RelicTypeMod.Dracula) { amount = MaxNewShardAmountDracula.Value; }
+                if (type == RelicTypeMod.WingedHorror) { amount = MaxNewShardAmountWingedHorror.Value; }
+                if (type == RelicTypeMod.OldBehemoth) { amount = MaxOldShardAmountBehemoth.Value; }
+                if (type == RelicTypeMod.OldTheMonster) { amount = MaxOldShardAmountTheMonster.Value; }
+                if (type == RelicTypeMod.OldWingedHorror) { amount = MaxOldShardAmountWingedHorror.Value; }
+                DB.ShardsData.TryAdd(type, new ItemsData(0, amount));
                 amount = 0;
             }
-            for (RelicType type = RelicType.TheMonster; type <= RelicType.Dracula; type++)
-            {
-                if (type == RelicType.TheMonster) { amount = MaxOldShardAmountTheMonster.Value; }
-                if (type == RelicType.Solarus) { amount = MaxOldShardAmountSolarus.Value; }
-                if (type == RelicType.WingedHorror) { amount = MaxOldShardAmountWingedHorror.Value; }
-                DB.OldShardsData.TryAdd(type, new ItemsData(0, amount));
-                amount = 0;
-            }
+
         }
         public static void ReadData()
         {
             int amount = 0;
-            for (RelicType type = RelicType.TheMonster; type <= RelicType.Dracula; type++)
+            for (RelicTypeMod type = RelicTypeMod.TheMonster; type <= RelicTypeMod.OldBehemoth; type++)
             {
-                amount = DB.NewShardsData[type].MaxCount;
-                if (type == RelicType.TheMonster) { MaxNewShardAmountTheMonster.Value = amount; }
-                if (type == RelicType.Solarus) { MaxNewShardAmountSolarus.Value = amount; }
-                if (type == RelicType.Dracula) { MaxNewShardAmountDracula.Value = amount; }
-                if (type == RelicType.WingedHorror) { MaxNewShardAmountWingedHorror.Value = amount; }
-            }
-            for (RelicType type = RelicType.TheMonster; type <= RelicType.Dracula; type++)
-            {
-                amount = DB.OldShardsData[type].MaxCount;
-                if (type == RelicType.TheMonster) { MaxOldShardAmountTheMonster.Value = amount; }
-                if (type == RelicType.Solarus) { MaxOldShardAmountSolarus.Value = amount; }
-                if (type == RelicType.WingedHorror) { MaxOldShardAmountWingedHorror.Value = amount; }
+                amount = DB.ShardsData[type].MaxCount;
+                if (type == RelicTypeMod.TheMonster) { MaxNewShardAmountTheMonster.Value = amount; }
+                if (type == RelicTypeMod.Solarus) { MaxNewShardAmountSolarus.Value = amount; }
+                if (type == RelicTypeMod.Dracula) { MaxNewShardAmountDracula.Value = amount; }
+                if (type == RelicTypeMod.WingedHorror) { MaxNewShardAmountWingedHorror.Value = amount; }
+                if (type == RelicTypeMod.OldTheMonster) { MaxOldShardAmountTheMonster.Value = amount; }
+                if (type == RelicTypeMod.OldBehemoth) { MaxOldShardAmountBehemoth.Value = amount; }
+                if (type == RelicTypeMod.OldWingedHorror) { MaxOldShardAmountWingedHorror.Value = amount; }
             }
         }
     }

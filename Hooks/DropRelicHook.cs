@@ -29,16 +29,6 @@ namespace ShardExtraLife.Hooks
             RelicsQuery.Dispose();
         }
     }
-    /*[HarmonyPatch(typeof(ItemPickupSystem), nameof(ItemPickupSystem.OnUpdate))]
-    public class ItemPickupSystem_patch
-    {
-        [HarmonyPostfix]
-        public static void postfix(ItemPickupSystem __instance)
-        {
-           // ShardUtils.UpdateShardslist();
-        }
-    }
-    */
     [HarmonyPatch(typeof(RelicDestroySystem), nameof(RelicDestroySystem.OnUpdate))]
     public class RelicDestroySystem_patch
     {

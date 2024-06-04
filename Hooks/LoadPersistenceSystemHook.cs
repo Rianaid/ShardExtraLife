@@ -12,7 +12,7 @@ namespace ShardExtraLife.Hooks
         {
             if (loadState == ServerStartupState.State.SuccessfulStartup)
             {
-                GamedataInit.Invoke();
+                Plugin.GameDataInit();
             }
         }
     }

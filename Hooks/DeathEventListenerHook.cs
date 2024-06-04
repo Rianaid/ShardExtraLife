@@ -25,11 +25,12 @@ namespace ShardExtraLife.Hooks
                         var guidtoname = Helper.PrefabCollectionSystem.PrefabGuidToNameDictionary;
                         if (DB.BossNames.TryGetValue(guidtoname[prefabguid], out var relicType))
                         {
-                            ShardDropper.ChoiceDropSystem(relicType, deathevent.Died);
+                            ShardDropper.ChoiceDropSystem(relicType, deathevent);
                         }
                     }
                 }
             }
+            deathevent_querry.Dispose();
         }
     }
 }

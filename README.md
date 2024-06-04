@@ -7,6 +7,12 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.3
+
+-Fixed incorrect old shards and the principles of their loss. Thanks to @Jera for finding the error.
+
+-Changed commands to accommodate new shard parameters.
+
 0.2.2
 
 -Fix check "CanDropShard" for shard icon on boss. The shard icon is not displayed on the boss because the feature does not update the shard data correctly.
@@ -43,18 +49,18 @@ For example:  `.sel ss me` - Show shard stats in player inventory.
 <details>
 <summary>For Admins</summary>
 
- -`editamount [Type of shards] [Name of shard] [amount]` or `ea [type of shards] [name of shard] [amount]`
+ -`editamount  [Name of shard] [amount]` or `ea  [name of shard] [amount]`
 
-	Change amount for [New,Old or All] shard type of ["Dracula","Solarus","TheMonster","WingedHorror" or "All"] shards.
+	Change amount of ["Dracula","Solarus","TheMonster","WingedHorror","OldTheMonster","OldWingedHorror","Behemoth" or "All"] shards.
 
 -`editchance [Action] [Chance drop new shards] [Chance drop old shards]` or `ec [Action] [Chance drop new shards] [Chance drop old shards]` 
 
 	 [Set] [NewChance] [OldChance] - Setup new chance drop for new shards: [NewChance] and old shards: [OldChance].
 	 [Check] - Show current drop shard chances.
 
--`adminsharddrop [Type of shard] [Name of shard] [Amount]` or `asd [Type of shard] [Name of shard] [Amount]`
+-`adminsharddrop [Name of shard] [Amount]` or `asd [Name of shard] [Amount]`
 
-     Drop ["New" or "Old"] shard type of ["Dracula","Solarus","TheMonster" or "WingedHorror"] in quantity [Amount]
+     Drop shard with ["Dracula","Solarus","TheMonster","WingedHorror","OldTheMonster","OldWingedHorror" or "Behemoth"] name in quantity [Amount]
 	 This command throws out shards despite the limits.
 </details>
 
@@ -95,6 +101,23 @@ EnabledAdminShardDropCommand = true
 # Setting type: Boolean
 # Default value: true
 PlayerCommandEnabled = true
+
+[Message]
+
+## Enable send messages from mod.
+# Setting type: Boolean
+# Default value: true
+EnableSendMessages = true
+
+## No drop because reach limit.
+# Setting type: String
+# Default value: The relic did not fall out. The limit on the number of relics [{relicTypeMod}] has been reached.
+ReachShardLimit = The relic did not fall out. The limit on the number of relics [{relicTypeMod}] has been reached.
+
+## No lucky drop.
+# Setting type: String
+# Default value: You\'re out of luck this time. The relic did not fall out. Try once more.
+NoDropLucky = You\'re out of luck this time. The relic did not fall out. Try once more.
 
 [Params]
 
@@ -140,10 +163,10 @@ MaxShardAmountTheMonster = 1
 # Default value: 1
 MaxShardAmountWingedHorror = 1
 
-## Maximum old "Solarus" shard amount if drop old shards "True".
+## Maximum old "Behemoth" shard amount if drop old shards "True".
 # Setting type: Int32
 # Default value: 1
-MaxOldShardAmountSolarus = 1
+MaxOldShardAmountBehemoth = 1
 
 ## Maximum old "TheMonster" shard amount if drop old shards "True".
 # Setting type: Int32

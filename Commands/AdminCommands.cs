@@ -1,5 +1,4 @@
-﻿using ProjectM.Shared;
-using ShardExtraLife.Configs;
+﻿using ShardExtraLife.Configs;
 using ShardExtraLife.Databases;
 using ShardExtraLife.Utils;
 using VampireCommandFramework;
@@ -12,73 +11,35 @@ namespace ShardExtraLife.Commands
         internal class ShardStatCommand
         {
             [Command("editamount", shortHand: "ea", usage: "[.sel ea ?]", description: "Edit shard amount drop.", adminOnly: true)]
-            public static void EditAmountCommand(ChatCommandContext ctx, string ShardsType = "?", string ShardName = "!", int amount = 1)
+            public static void EditAmountCommand(ChatCommandContext ctx, string ShardName = "?", int amount = 1)
             {
                 if (DB.EnabledEditAmountCommand)
                 {
                     var sb = new Il2CppSystem.Text.StringBuilder();
-                    if (ShardsType.ToLower() == "?" || ShardsType.ToLower() == "help" || ShardsType.ToLower() == "h")
+                    if (ShardName.ToLower() == "?" || ShardName.ToLower() == "help" || ShardName.ToLower() == "h")
                     {
                         sb.Clear();
-                        sb.AppendLine($"[New||Old||All] [Dracula||Solarus||TheMonster||WingedHorror||All] [amount]");
+                        sb.AppendLine($"[Dracula||Solarus||TheMonster||WingedHorror||OldTheMonster||OldWingedHorror||Behemoth||All] [amount]");
                         sb.AppendLine($"This command is for changing the number of shards on the server.");
-                        sb.AppendLine($"The first parameter is: \"New\" for new shards, \"Old\" for old ones and \"All\" for all of them together.");
-                        sb.AppendLine($"The second parameter is the name of the shard or \"All\" for all of them together.");
-                        sb.AppendLine($"The third is the maximum number of shards.");
+                        sb.AppendLine($"The first parameter is the name of the shard or \"All\" for all of them together.");
+                        sb.AppendLine($"The second parameter is the maximum number of shards.");
                         ctx.Reply(sb.ToString());
                     }
                     else
                     {
-                        if (ShardsType.ToLower() == "new")
+                        if (ShardUtils.RelicTypeCheck(ShardName, out var type))
                         {
-                            if (ShardUtils.RelicTypeCheck(ShardName, out var type))
-                            {
-                                ShardUtils.UpdateMaxAmount(amount, DB.NewShardsData, type);
-                            }
-                            else if (ShardName.ToLower() == "all")
-                            {
-                                ShardUtils.UpdateMaxAmountAll(amount, DB.NewShardsData);
-                            }
-                            else
-                            {
-                                ctx.Reply("Incorrect argument. Use [Dracula||Solarus||TheMonster||WingedHorror||All].");
-                            }
+                            ShardUtils.UpdateMaxAmount(amount, DB.ShardsData, type);
+                            ctx.Reply($"Max amount [{ShardName}] shard changed and now [{amount}].");
                         }
-                        else if (ShardsType.ToLower() == "old")
+                        else if (ShardName.ToLower() == "all")
                         {
-                            if (ShardUtils.RelicTypeCheck(ShardName, out var type))
-                            {
-                                ShardUtils.UpdateMaxAmount(amount, DB.OldShardsData, type);
-                            }
-                            else if (ShardName.ToLower() == "all")
-                            {
-                                ShardUtils.UpdateMaxAmountAll(amount, DB.OldShardsData);
-                            }
-                            else
-                            {
-                                ctx.Reply("Incorrect argument. Use [Dracula||Solarus||TheMonster||WingedHorror||All].");
-                            }
-                        }
-                        else if (ShardsType.ToLower() == "all")
-                        {
-                            if (ShardUtils.RelicTypeCheck(ShardName, out var type))
-                            {
-                                ShardUtils.UpdateMaxAmount(amount, DB.NewShardsData, type);
-                                ShardUtils.UpdateMaxAmount(amount, DB.OldShardsData, type);
-                            }
-                            else if (ShardName.ToLower() == "all")
-                            {
-                                ShardUtils.UpdateMaxAmountAll(amount, DB.NewShardsData);
-                                ShardUtils.UpdateMaxAmountAll(amount, DB.OldShardsData);
-                            }
-                            else
-                            {
-                                ctx.Reply("Incorrect argument. Use [Dracula||Solarus||TheMonster||WingedHorror||All].");
-                            }
+                            ShardUtils.UpdateMaxAmountAll(amount, DB.ShardsData);
+                            ctx.Reply($"Max amount [All] shards changed and now [{amount}].");
                         }
                         else
                         {
-                            ctx.Reply("Incorrect argument.Use one of these: [New||Old||All]. Use [?||help||h] for help");
+                            ctx.Reply("Incorrect argument. Use [Dracula||Solarus||TheMonster||WingedHorror||OldTheMonster||OldWingedHorror||Behemoth||All].");
                         }
                     }
                     MainConfig.Save();
@@ -112,26 +73,34 @@ namespace ShardExtraLife.Commands
                     {
                         if (action.ToLower() == "set")
                         {
-                            if (DB.DropNewShards && DB.DropOldShards)
+                            if (NewChance >= 0 && NewChance <= 100 && OldChance >= 0 && OldChance <= 100)
                             {
-                                if (NewChance + OldChance <= 100)
+                                if (DB.DropNewShards && DB.DropOldShards)
+                                {
+                                    if (NewChance + OldChance <= 100)
+                                    {
+                                        DB.ChanceDropNewShard = NewChance / 100;
+                                        DB.ChanceDropOldShard = OldChance / 100;
+                                        ctx.Reply("Drop chance setup successful");
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        ctx.Reply("Incorrect argument. Sum drop chances cannot exceed 100.");
+                                        return;
+                                    }
+                                }
+                                else
                                 {
                                     DB.ChanceDropNewShard = NewChance / 100;
                                     DB.ChanceDropOldShard = OldChance / 100;
                                     ctx.Reply("Drop chance setup successful");
                                     return;
                                 }
-                                else
-                                {
-                                    ctx.Reply("Incorrect argument. Sum drop chances cannot exceed 100.");
-                                    return;
-                                }
                             }
                             else
                             {
-                                DB.ChanceDropNewShard = NewChance / 100;
-                                DB.ChanceDropOldShard = OldChance / 100;
-                                ctx.Reply("Drop chance setup successful");
+                                ctx.Reply("Incorrect argument. Drop chance must be between 0 and 100 inclusive.");
                                 return;
                             }
                         }
@@ -164,11 +133,11 @@ namespace ShardExtraLife.Commands
                 if (DB.EnabledShardDropCommand)
                 {
                     var sb = new Il2CppSystem.Text.StringBuilder();
-                    var type = RelicType.None;
+                    var type = RelicTypeMod.None;
                     if (ShardsType.ToLower() == "?")
                     {
                         sb.Clear();
-                        sb.AppendLine($"[.sela asd] [New||Old] [Dracula||Solarus||TheMonster||WingedHorror] [amount]");
+                        sb.AppendLine($"[.sela asd] [Dracula||Solarus||TheMonster||WingedHorror||OldTheMonster||OldWingedHorror||Behemoth] [amount]");
                         sb.AppendLine($"This admin only command create shard drop despite the limits.");
                         sb.AppendLine($"This command was created because the console command for issuing an item cannot bypass my created limit. And yes, I know this is a bug. I will fix it...");
                         ctx.Reply(sb.ToString());
@@ -176,27 +145,15 @@ namespace ShardExtraLife.Commands
                     }
                     else
                     {
-                        if (name.ToLower() == "dracula") { type = RelicType.Dracula; }
-                        else if (name.ToLower() == "solarus") { type = RelicType.Solarus; }
-                        else if (name.ToLower() == "wingedhorror") { type = RelicType.WingedHorror; }
-                        else if (name.ToLower() == "themonster") { type = RelicType.TheMonster; }
-                        else { ctx.Reply($"Incorrect argument. Use one of these: [Dracula][Solarus][TheMonster][WingedHorror]."); return; }
-                        if (ShardsType.ToLower() == "old")
-                        {
-                            if (type == RelicType.Dracula)
-                            {
-                                ctx.Reply($"Old Dracula shard not fount.");
-                            }
-                            else
-                            {
-                                ShardDropper.AdminDropShards(ctx, amount, type, true);
-                            }
-                        }
-                        else if (ShardsType.ToLower() == "new")
-                        {
-                            ShardDropper.AdminDropShards(ctx, amount, type, false);
-                        }
-                        else { ctx.Reply($"Incorrect argument. Use one of these: [New] or [Old]. Use [?||help||h] for help."); return; }
+                        if (name.ToLower() == "dracula") { type = RelicTypeMod.Dracula; }
+                        else if (name.ToLower() == "solarus") { type = RelicTypeMod.Solarus; }
+                        else if (name.ToLower() == "wingedhorror") { type = RelicTypeMod.WingedHorror; }
+                        else if (name.ToLower() == "themonster") { type = RelicTypeMod.TheMonster; }
+                        else if (name.ToLower() == "behemoth") { type = RelicTypeMod.OldBehemoth; }
+                        else if (name.ToLower() == "oldwingedhorror") { type = RelicTypeMod.OldWingedHorror; }
+                        else if (name.ToLower() == "oldthemonster") { type = RelicTypeMod.OldTheMonster; }
+                        else { ctx.Reply($"Incorrect argument. Use one of these: [Dracula||Solarus||TheMonster||WingedHorror||OldTheMonster||OldWingedHorror||Behemoth]."); return; }
+                        ShardDropper.AdminDropShards(ctx, amount, type);
                     }
                 }
                 else

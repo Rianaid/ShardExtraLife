@@ -1,5 +1,4 @@
-﻿using ProjectM.Shared;
-using Stunlock.Core;
+﻿using Stunlock.Core;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -32,6 +31,17 @@ namespace ShardExtraLife.Databases
             return new ItemsData(Count, amount) { Entities = this.Entities };
         }
     }
+    public enum RelicTypeMod : byte
+    {
+        None,
+        TheMonster,
+        Solarus,
+        WingedHorror,
+        Dracula,
+        OldTheMonster,
+        OldWingedHorror,
+        OldBehemoth
+    }
     internal class DB
     {
         //--------ChanceDrop------------
@@ -58,9 +68,11 @@ namespace ShardExtraLife.Databases
         internal static bool DropOldShards = true;
         internal static bool DestroyItemWhenBroken = true;
         internal static bool EnableUltimateReplace = true;
-
-        internal static ConcurrentDictionary<RelicType, ItemsData> NewShardsData = new ConcurrentDictionary<RelicType, ItemsData>();
-        internal static ConcurrentDictionary<RelicType, ItemsData> OldShardsData = new ConcurrentDictionary<RelicType, ItemsData>();
+        //--------Message------------
+        internal static bool EnableSendMessages = true;
+        internal static string ReachShardLimit = "";
+        internal static string NoDropLucky = "";
+        internal static ConcurrentDictionary<RelicTypeMod, ItemsData> ShardsData = new ConcurrentDictionary<RelicTypeMod, ItemsData>();
         internal static List<PrefabGUID> ShardPrefabs = new List<PrefabGUID>();
 
 
@@ -71,17 +83,12 @@ namespace ShardExtraLife.Databases
             "TM_Castle_Container_Specialized_Soulshards_Manticore",
             "TM_Castle_Container_Specialized_Soulshards_Dracula"
         };
-        internal static List<string> OldRelicBuildingName = new List<string>()
-        {
-            "TM_Relic_SoulShard_Manticore",
-            "TM_Relic_SoulShard_Monster",
-            "TM_Relic_SoulShard_Paladin"
-        };
         internal static List<string> OldShardName = new List<string>()
         {
             "Item_Building_Relic_Manticore",
             "Item_Building_Relic_Monster",
-            "Item_Building_Relic_Paladin"
+            "Item_Building_Relic_Paladin",
+            "Item_Building_Relic_Behemoth"
         };
         internal static List<string> NewShardNames = new List<string>()
         {
@@ -95,20 +102,20 @@ namespace ShardExtraLife.Databases
             .Add("Item_MagicSource_SoulShard_Manticore", "Item_EquipBuff_MagicSource_Soulshard_Manticore")
             .Add("Item_MagicSource_SoulShard_Monster", "Item_EquipBuff_MagicSource_Soulshard_TheMonster")
             .Add("Item_MagicSource_SoulShard_Solarus", "Item_EquipBuff_MagicSource_Soulshard_Solarus");
-        internal static ImmutableDictionary<string, RelicType> BossNames = ImmutableDictionary.Create<string, RelicType>()
-            .Add("CHAR_ChurchOfLight_Paladin_VBlood", RelicType.Solarus)
-            .Add("CHAR_Gloomrot_Monster_VBlood", RelicType.TheMonster)
-            .Add("CHAR_Manticore_VBlood", RelicType.WingedHorror)
-            .Add("CHAR_Vampire_Dracula_VBlood", RelicType.Dracula);
-        internal static ImmutableDictionary<RelicType, string> NewShard = ImmutableDictionary.Create<RelicType, string>()
-            .Add(RelicType.Solarus, "Item_MagicSource_SoulShard_Solarus")
-            .Add(RelicType.TheMonster, "Item_MagicSource_SoulShard_Monster")
-            .Add(RelicType.WingedHorror, "Item_MagicSource_SoulShard_Manticore")
-            .Add(RelicType.Dracula, "Item_MagicSource_SoulShard_Dracula");
-        internal static ImmutableDictionary<RelicType, string> OldShard = ImmutableDictionary.Create<RelicType, string>()
-            .Add(RelicType.Solarus, "Item_Building_Relic_Paladin")
-            .Add(RelicType.TheMonster, "Item_Building_Relic_Monster")
-            .Add(RelicType.WingedHorror, "Item_Building_Relic_Manticore")
-            .Add(RelicType.Dracula, "Item_MagicSource_SoulShard_Dracula");
+        internal static ImmutableDictionary<string, RelicTypeMod> BossNames = ImmutableDictionary.Create<string, RelicTypeMod>()
+            .Add("CHAR_ChurchOfLight_Paladin_VBlood", RelicTypeMod.Solarus)
+            .Add("CHAR_Gloomrot_Monster_VBlood", RelicTypeMod.TheMonster)
+            .Add("CHAR_Manticore_VBlood", RelicTypeMod.WingedHorror)
+            .Add("CHAR_Vampire_Dracula_VBlood", RelicTypeMod.Dracula)
+            .Add("CHAR_Cursed_MountainBeast_VBlood", RelicTypeMod.OldBehemoth);
+        internal static ImmutableDictionary<RelicTypeMod, string> RelicModShards = ImmutableDictionary.Create<RelicTypeMod, string>()
+            .Add(RelicTypeMod.Solarus, "Item_MagicSource_SoulShard_Solarus")
+            .Add(RelicTypeMod.TheMonster, "Item_MagicSource_SoulShard_Monster")
+            .Add(RelicTypeMod.WingedHorror, "Item_MagicSource_SoulShard_Manticore")
+            .Add(RelicTypeMod.Dracula, "Item_MagicSource_SoulShard_Dracula")
+            .Add(RelicTypeMod.OldTheMonster, "Item_Building_Relic_Monster")
+            .Add(RelicTypeMod.OldWingedHorror, "Item_Building_Relic_Manticore")
+            .Add(RelicTypeMod.OldBehemoth, "Item_Building_Relic_Behemoth");
+
     }
 }
