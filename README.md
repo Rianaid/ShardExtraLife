@@ -7,6 +7,12 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.5
+
+-Rework ultimate change. Now if you don’t like the changed ult, then just replace it with the one you need.
+
+-Due to its uselessness, the ult replacement command was removed.
+
 0.2.4
 
 -Fix save configuration file.
@@ -74,10 +80,6 @@ For example:  `.sel ss me` - Show shard stats in player inventory.
  -`shardstatus [Where]` or `ss [Where]`
 
 	Check status of shards in inventory: ["Me"] or global status of drop:["All"].
-
--`shardultimatereplace [Where]` or `sur [Where]` 
-
-	 Change status of replace ultimate on shards. search shards for edit in ["Inventory", "Equipment" or "All"].
 
 </details>
 

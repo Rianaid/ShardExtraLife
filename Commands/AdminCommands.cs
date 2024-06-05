@@ -129,13 +129,13 @@ namespace ShardExtraLife.Commands
                 }
             }
             [Command("adminsharddrop", shortHand: "asd", usage: "[.sel asd ?]", description: "Manual drop shard.", adminOnly: true)]
-            public static void AdminShardDropCommand(ChatCommandContext ctx, string ShardsType = "?", string name = "none", int amount = 1)
+            public static void AdminShardDropCommand(ChatCommandContext ctx, string name = "?", int amount = 1)
             {
                 if (DB.EnabledShardDropCommand)
                 {
                     var sb = new Il2CppSystem.Text.StringBuilder();
                     var type = RelicTypeMod.None;
-                    if (ShardsType.ToLower() == "?")
+                    if (name.ToLower() == "?")
                     {
                         sb.Clear();
                         sb.AppendLine($"[.sela asd] [Dracula||Solarus||TheMonster||WingedHorror||OldTheMonster||OldWingedHorror||Behemoth] [amount]");

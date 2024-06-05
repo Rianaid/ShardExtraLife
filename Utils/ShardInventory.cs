@@ -9,48 +9,6 @@ namespace ShardExtraLife.Utils
 {
     internal class ShardInventory
     {
-        internal static int ShardUltimateReplace(ChatCommandContext ctx, string where)
-        {
-            var result = SearchShard(ctx, where, out var shardlist);
-            int count = 0;
-            if (result)
-            {
-
-                foreach (var shard in shardlist)
-                {
-                    if (Helper.EntityManager.HasComponent<EquippableData>(shard))
-                    {
-                        var prefab = Helper.EntityManager.GetComponentData<PrefabGUID>(shard);
-                        var name = Helper.PrefabCollectionSystem.PrefabGuidToNameDictionary[prefab];
-                        if (DB.ShardNameBuff.ContainsKey(name))
-                        {
-                            var buffname = DB.ShardNameBuff[name];
-                            var buffprefab = Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary[buffname];
-                            var equippableData = Helper.EntityManager.GetComponentData<EquippableData>(shard);
-
-                            if (equippableData.BuffGuid.Equals(buffprefab))
-                            {
-                                equippableData.BuffGuid = new PrefabGUID(0);
-                            }
-                            else
-                            {
-                                equippableData.BuffGuid = buffprefab;
-                            }
-                            Helper.EntityManager.SetComponentData(shard, equippableData);
-                            count++;
-                        }
-                    }
-                }
-            }
-            if (count == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
         internal static bool SearchShard(ChatCommandContext ctx, string where, out List<Entity> shardlist)
         {
             shardlist = new List<Entity>();
@@ -78,8 +36,6 @@ namespace ShardExtraLife.Utils
             {
                 return false;
             }
-
-
         }
         internal static bool SearchShardInInventory(ChatCommandContext ctx, out List<Entity> shardlistInventory)
         {
