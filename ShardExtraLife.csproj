@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>ShardExtraLife</AssemblyName>
     <Description>Control Shards params.</Description>
-    <Version>0.2.3</Version>
+    <Version>0.2.4</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>ShardExtraLife</RootNamespace>

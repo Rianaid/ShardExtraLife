@@ -7,6 +7,10 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.4
+
+-Fix save configuration file.
+
 0.2.3
 
 -Fixed incorrect old shards and the principles of their loss. Thanks to @Jera for finding the error.

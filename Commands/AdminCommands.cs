@@ -82,6 +82,7 @@ namespace ShardExtraLife.Commands
                                         DB.ChanceDropNewShard = NewChance / 100;
                                         DB.ChanceDropOldShard = OldChance / 100;
                                         ctx.Reply("Drop chance setup successful");
+                                        MainConfig.Save();
                                         return;
                                     }
                                     else
@@ -95,6 +96,7 @@ namespace ShardExtraLife.Commands
                                     DB.ChanceDropNewShard = NewChance / 100;
                                     DB.ChanceDropOldShard = OldChance / 100;
                                     ctx.Reply("Drop chance setup successful");
+                                    MainConfig.Save();
                                     return;
                                 }
                             }
@@ -116,10 +118,9 @@ namespace ShardExtraLife.Commands
                         else
                         {
                             ctx.Reply("Incorrect argument. Use one of these: [Set||Check]. Use [?||help||h] for help");
+                            return;
                         }
                     }
-                    MainConfig.Save();
-                    return;
                 }
                 else
                 {

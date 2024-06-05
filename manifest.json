@@ -1,6 +1,6 @@
 {
   "name": "ShardExtraLife",
-  "version_number": "0.2.3",
+  "version_number": "0.2.4",
   "website_url": "https://github.com/Rianaid/ShardExtraLife",
   "description": "Server side only mod to change shards params like is: durability, time to break, destroy when broken and drop amount.",
   "dependencies": [
