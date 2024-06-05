@@ -9,7 +9,7 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 
 0.2.5
 
--Rework ultimate change. Now if you don’t like the changed ult, then just replace it with the one you need.
+-Rework ultimate change. Now if you donâ€™t like the changed ult, then just replace it with the one you need.
 
 -Due to its uselessness, the ult replacement command was removed.
 
