@@ -18,8 +18,11 @@ namespace ShardExtraLife.Hooks
                 for (var i = 0; i < replacebuffer.Length; i++)
                 {
                     var data = replacebuffer[i];
-                    data.Priority = 10;
-                    replacebuffer[i] = data;
+                    if (data.Slot == 7)
+                    {
+                        data.Priority = 10;
+                        replacebuffer[i] = data;
+                    }
                 }
             }
             query.Dispose();

@@ -7,6 +7,10 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.6
+
+-Fixed the problem of inability to summon mount.
+
 0.2.5
 
 -Rework ultimate change. Now if you don’t like the changed ult, then just replace it with the one you need.
