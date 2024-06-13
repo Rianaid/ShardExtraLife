@@ -70,9 +70,7 @@ namespace ShardExtraLife.Utils
             }
             else
             {
-
                 Randomizer(0.5f, 0.5f, out dropOld, out dropNew, out var chance);
-
             }
             if (relicTypeMod == RelicTypeMod.Dracula || relicTypeMod == RelicTypeMod.Solarus)
             {
@@ -85,7 +83,7 @@ namespace ShardExtraLife.Utils
                 {
                     canDropNew = DB.ShardsData[relicTypeMod].canDrop();
                 }
-                if (canDropNew && (dropOld || dropNew))
+                if (canDropNew && (dropOld || dropNew) && DB.DropNewShards)
                 {
                     DropShard(DropperEntity, prefabNew, 1);
                 }
@@ -101,7 +99,7 @@ namespace ShardExtraLife.Utils
                 {
                     canDropOld = DB.ShardsData[relicTypeMod].canDrop();
                 }
-                if (canDropOld && (dropOld || dropNew))
+                if (canDropOld && (dropOld || dropNew)&& DB.DropOldShards)
                 {
                     DropShard(DropperEntity, prefabOld, 1);
                 }
@@ -151,6 +149,8 @@ namespace ShardExtraLife.Utils
                 }
                 else
                 {
+                    if (!DB.DropNewShards) { canDropNew = false; }
+                    if (!DB.DropOldShards) { canDropOld = false; }
                     if (dropOld && canDropOld)
                     {
                         DropShard(DropperEntity, prefabOld, 1);
@@ -171,7 +171,7 @@ namespace ShardExtraLife.Utils
                     {
                         if (CanSendMessage)
                         {
-                            ServerChatUtils.SendSystemMessageToClient(Helper.EntityManager, user, $"{DB.ReachShardLimit}");
+                            ServerChatUtils.SendSystemMessageToClient(Helper.EntityManager, user, $"{DB.ReachShardLimit.Replace("{relicTypeMod}", relicTypeMod.ToString())}");
                         }
                     }
                     else if (!dropOld && !dropNew)

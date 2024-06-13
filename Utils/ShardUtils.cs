@@ -68,14 +68,15 @@ namespace ShardExtraLife.Utils
                 {
                     if (PrefabGuidToEntityMap.TryGetValue(name, out var entity))
                     {
-                        if (!DB.EnableUltimateReplace)
+                        if (Helper.EntityManager.HasComponent<EquippableData>(entity))
                         {
-                            if (Helper.EntityManager.HasComponent<EquippableData>(entity))
-                            {
-                                var equippableData = Helper.EntityManager.GetComponentData<EquippableData>(entity);
-                                equippableData.BuffGuid = new PrefabGUID(0);
-                                Helper.EntityManager.SetComponentData(entity, equippableData);
-                            }
+                            var guid = Helper.EntityManager.GetComponentData<PrefabGUID>(entity);
+                            var prefabname = Helper.PrefabCollectionSystem.PrefabGuidToNameDictionary[guid];
+                            var buffname = DB.ShardNameBuff[prefabname];
+                            guid = Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary[buffname];
+                            var equippableData = Helper.EntityManager.GetComponentData<EquippableData>(entity);
+                            equippableData.BuffGuid = guid;
+                            Helper.EntityManager.SetComponentData(entity, equippableData);
                         }
                         if (Helper.EntityManager.HasComponent<LoseDurabilityOverTime>(entity))
                         {
@@ -88,7 +89,7 @@ namespace ShardExtraLife.Utils
                             var durability = Helper.EntityManager.GetComponentData<Durability>(entity);
                             durability.Value = DB.MaxDurability;
                             durability.MaxDurability = DB.MaxDurability;
-                            durability.DestroyItemWhenBroken = DB.DestroyItemWhenBroken;
+                            durability.DestroyItemWhenBroken = DB.DestroyNewWhenBroken;
                             Helper.EntityManager.SetComponentData(entity, durability);
                         }
                     }
@@ -103,7 +104,7 @@ namespace ShardExtraLife.Utils
                         if (Helper.EntityManager.HasComponent<LifeTime>(entity))
                         {
                             var LifeTime = Helper.EntityManager.GetComponentData<LifeTime>(entity);
-                            if (DB.DestroyItemWhenBroken)
+                            if (DB.DestroyOldWhenBroken)
                             {
                                 LifeTime.EndAction = LifeTimeEndAction.Destroy;
                             }
@@ -125,14 +126,15 @@ namespace ShardExtraLife.Utils
 
                 foreach (var entity in relicEntities)
                 {
-                    if (!DB.EnableUltimateReplace)
+                    if (Helper.EntityManager.HasComponent<EquippableData>(entity))
                     {
-                        if (Helper.EntityManager.HasComponent<EquippableData>(entity))
-                        {
-                            var equippableData = Helper.EntityManager.GetComponentData<EquippableData>(entity);
-                            equippableData.BuffGuid = new PrefabGUID(0);
-                            Helper.EntityManager.SetComponentData(entity, equippableData);
-                        }
+                        var guid = Helper.EntityManager.GetComponentData<PrefabGUID>(entity);
+                        var prefabname = Helper.PrefabCollectionSystem.PrefabGuidToNameDictionary[guid];
+                        var buffname = DB.ShardNameBuff[prefabname];
+                        guid = Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary[buffname];
+                        var equippableData = Helper.EntityManager.GetComponentData<EquippableData>(entity);
+                        equippableData.BuffGuid = guid;
+                        Helper.EntityManager.SetComponentData(entity, equippableData);
                     }
                     if (Helper.EntityManager.HasComponent<LoseDurabilityOverTime>(entity))
                     {
@@ -145,13 +147,13 @@ namespace ShardExtraLife.Utils
                         var durability = Helper.EntityManager.GetComponentData<Durability>(entity);
                         if (durability.Value == 0) { durability.Value = 15; }
                         durability.MaxDurability = DB.MaxDurability;
-                        durability.DestroyItemWhenBroken = DB.DestroyItemWhenBroken;
+                        durability.DestroyItemWhenBroken = DB.DestroyNewWhenBroken;
                         Helper.EntityManager.SetComponentData(entity, durability);
                     }
                     if (Helper.EntityManager.HasComponent<LifeTime>(entity))
                     {
                         var LifeTime = Helper.EntityManager.GetComponentData<LifeTime>(entity);
-                        if (DB.DestroyItemWhenBroken)
+                        if (DB.DestroyOldWhenBroken)
                         {
                             LifeTime.EndAction = LifeTimeEndAction.Destroy;
                         }

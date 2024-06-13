@@ -111,11 +111,11 @@ namespace ShardExtraLife.Commands
                         }
                         else if (!DB.DropNewShards && DB.DropOldShards && DB.UseDropChanceForOldShard)
                         {
-                            ctx.Reply($"Server drop chance: Old [{DB.ChanceDropOldShard * 100:F2}%]");
+                            ctx.Reply($"Server drop chance: Old [{(DB.ChanceDropNewShard + DB.ChanceDropOldShard) * 100:F2}%]");
                         }
                         else if (DB.DropNewShards && !DB.DropOldShards && DB.UseDropChanceForNewShard)
                         {
-                            ctx.Reply($"Server drop chance: New [{DB.ChanceDropNewShard * 100:F2}%];");
+                            ctx.Reply($"Server drop chance: New [{(DB.ChanceDropNewShard+ DB.ChanceDropOldShard) * 100:F2}%];");
                         }
                         else
                         {

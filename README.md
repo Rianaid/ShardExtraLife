@@ -7,6 +7,16 @@ Return old shard drop. Repair in special pedestal. Turn off|on replace ultimate 
 <details>
 <summary>Changelog</summary>
 
+0.2.7
+
+-Fixed an issue with the ult. again.
+
+-Added a setting to disable deleting shards separately new and old.
+
+-Drop disabling bug has been fixed. The settings were there but not used.
+
+-An attempt to fix broken shards in older versions. In theory it should work, but this is not certain. Verification required.
+
 0.2.6
 
 -Fixed the problem of inability to summon mount.

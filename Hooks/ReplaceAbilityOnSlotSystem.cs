@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using ProjectM;
+using ShardExtraLife.Databases;
 using ShardExtraLife.Utils;
 using Unity.Collections;
 
@@ -18,9 +19,9 @@ namespace ShardExtraLife.Hooks
                 for (var i = 0; i < replacebuffer.Length; i++)
                 {
                     var data = replacebuffer[i];
-                    if (data.Slot == 7)
+                    if (data.Slot == 7 && DB.ShardSpellPrefabs.Contains(data.NewGroupId))
                     {
-                        data.Priority = 10;
+                        data.Priority = 1;
                         replacebuffer[i] = data;
                     }
                 }

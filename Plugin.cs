@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using ShardExtraLife.Configs;
+using ShardExtraLife.Databases;
 using ShardExtraLife.Utils;
 using System.Reflection;
 using VampireCommandFramework;
@@ -33,6 +34,11 @@ namespace ShardExtraLife
             BaseLoop.Initialize();
             ShardDropper.ClearDropTable();
             ShardUtils.ChangeLifeTime();
+            DB.ShardSpellPrefabs.Clear();
+            DB.ShardSpellPrefabs.Add(Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary["AB_Blood_BloodStorm_AbilityGroup"]);
+            DB.ShardSpellPrefabs.Add(Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary["AB_Storm_EyeOfTheStorm_AbilityGroup"]);
+            DB.ShardSpellPrefabs.Add(Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary["AB_Chaos_Voidquake_AbilityGroup"]);
+            DB.ShardSpellPrefabs.Add(Helper.PrefabCollectionSystem.NameToPrefabGuidDictionary["AB_Unholy_SummonFallenAngel_AbilityGroup"]);
         }
         public override bool Unload()
         {

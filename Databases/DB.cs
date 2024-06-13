@@ -1,4 +1,5 @@
-﻿using Stunlock.Core;
+﻿using ShardExtraLife.Utils;
+using Stunlock.Core;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -66,14 +67,14 @@ namespace ShardExtraLife.Databases
         internal static bool UpdateExistingShards = true;
         internal static bool DropNewShards = true;
         internal static bool DropOldShards = true;
-        internal static bool DestroyItemWhenBroken = true;
-        internal static bool EnableUltimateReplace = true;
+        internal static bool DestroyNewWhenBroken = true;
+        internal static bool DestroyOldWhenBroken = true;
         //--------Message------------
         internal static bool EnableSendMessages = true;
         internal static string ReachShardLimit = "";
         internal static string NoDropLucky = "";
         internal static ConcurrentDictionary<RelicTypeMod, ItemsData> ShardsData = new ConcurrentDictionary<RelicTypeMod, ItemsData>();
-        internal static List<PrefabGUID> ShardPrefabs = new List<PrefabGUID>();
+        internal static List<PrefabGUID> ShardSpellPrefabs = new List<PrefabGUID>();
 
 
         internal static List<string> NewRelicBuildingName = new List<string>()

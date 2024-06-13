@@ -14,21 +14,20 @@ namespace ShardExtraLife.Configs
         public static ConfigEntry<float> ChanceDropNewShard;
         public static ConfigEntry<float> ChanceDropOldShard;
 
-
         public static ConfigEntry<bool> UpdateExistingShards;
         public static ConfigEntry<bool> DropNewShards;
         public static ConfigEntry<bool> DropOldShards;
         public static ConfigEntry<bool> UseDropChanceForNewShard;
         public static ConfigEntry<bool> UseDropChanceForOldShard;
         public static ConfigEntry<bool> DropNewAndOldShardTogether;
-        public static ConfigEntry<bool> EnableUltimateReplace;
         //--------Durability------------
         public static ConfigEntry<float> TimeUntilBroken;
         public static ConfigEntry<float> MaxDurability;
         public static ConfigEntry<float> LifeTimeOldShard;
         public static ConfigEntry<float> RepairMultiplier;
         public static ConfigEntry<float> AdditionalRepairPoints;
-        public static ConfigEntry<bool> DestroyItemWhenBroken;
+        public static ConfigEntry<bool> DestroyNewWhenBroken;
+        public static ConfigEntry<bool> DestroyOldWhenBroken;
         public static ConfigEntry<bool> EnabledRepairInAltar;
         //--------ShardAmount----------
         public static ConfigEntry<int> MaxNewShardAmountDracula;
@@ -65,7 +64,9 @@ namespace ShardExtraLife.Configs
             RepairMultiplier = Conf.Bind("ShardExtraLife", "RepairMultiplier", 1f, "Shard recovery multiplier. Currently the timer runs every 60 seconds.");
             AdditionalRepairPoints = Conf.Bind("ShardExtraLife", "AdditionalRepairPoints", 1f, "Additional durability points for shards during repairs. Currently the timer runs every 60 seconds.");
             EnabledRepairInAltar = Conf.Bind("ShardExtraLife", "EnabledRepairInAltar", true, "Enable repair shard in special pedestal.");
-            DestroyItemWhenBroken = Conf.Bind("ShardExtraLife", "DestroyItemWhenBroken", true, "Enable destroy shard when broken.");
+            DestroyNewWhenBroken = Conf.Bind("ShardExtraLife", "DestroyNewWhenBroken", true, "Enable destroy new shard when broken.");
+            DestroyOldWhenBroken = Conf.Bind("ShardExtraLife", "DestroyOldWhenBroken", true, "Enable destroy old shard when broken.");
+
             //--------ChanceDrop------------
             ChanceDropNewShard = Conf.Bind("ShardChanceDrop", "ChanceDropNewShard", 0.5f, "Chance drop new shard.");
             ChanceDropOldShard = Conf.Bind("ShardChanceDrop", "ChanceDropOldShard", 0.5f, "Chance drop old shard.");
@@ -81,7 +82,6 @@ namespace ShardExtraLife.Configs
             UpdateExistingShards = Conf.Bind("Params", "UpdateExistingShards", true, "Enable update existing shards.");
             DropNewShards = Conf.Bind("Params", "DropNewShards", true, "Enable Drop new shard.");
             DropOldShards = Conf.Bind("Params", "DropOldShards", true, "Enable drop old shard.");
-            EnableUltimateReplace = Conf.Bind("Params", "EnableUltimateReplace", true, "Enable ultimate skill replace.");
             //--------Message------------
             EnableSendMessages = Conf.Bind("Message", "EnableSendMessages", true, "Enable send messages from mod.");
             ReachShardLimit = Conf.Bind("Message", "ReachShardLimit", "The relic did not fall out. The limit on the number of relics [{relicTypeMod}] has been reached.", "No drop because reach limit.");
@@ -106,6 +106,8 @@ namespace ShardExtraLife.Configs
                 ChanceDropOldShard.Value = 0.5f;
                 Plugin.Logger.LogWarning($"Incorrect drop chance. setup default setting (50%). ");
             }
+            DB.DropOldShards = DropOldShards.Value;
+            DB.DropNewShards = DropNewShards.Value;
             //--------Commands------------
             DB.EnabledEditAmountCommand = EnabledEditAmountCommand.Value;
             DB.EnabledEditChanceCommand = EnabledEditChanceCommand.Value;
@@ -114,7 +116,8 @@ namespace ShardExtraLife.Configs
             //--------Params------------
             DB.ChanceDropNewShard = ChanceDropNewShard.Value;
             DB.ChanceDropOldShard = ChanceDropOldShard.Value;
-            DB.DestroyItemWhenBroken = DestroyItemWhenBroken.Value;
+            DB.DestroyNewWhenBroken = DestroyNewWhenBroken.Value;
+            DB.DestroyOldWhenBroken = DestroyOldWhenBroken.Value;
             DB.UpdateExistingShards = UpdateExistingShards.Value;
             DB.UseDropChanceForNewShard = UseDropChanceForNewShard.Value;
             DB.UseDropChanceForOldShard = UseDropChanceForOldShard.Value;
@@ -141,7 +144,8 @@ namespace ShardExtraLife.Configs
             ChanceDropNewShard.Value = DB.ChanceDropNewShard;
             ChanceDropOldShard.Value = DB.ChanceDropOldShard;
             //--------Params------------
-            DestroyItemWhenBroken.Value = DB.DestroyItemWhenBroken;
+            DestroyOldWhenBroken.Value = DB.DestroyOldWhenBroken;
+            DestroyNewWhenBroken.Value = DB.DestroyNewWhenBroken;
             UpdateExistingShards.Value = DB.UpdateExistingShards;
             UseDropChanceForNewShard.Value = DB.UseDropChanceForNewShard;
             UseDropChanceForOldShard.Value = DB.UseDropChanceForOldShard;
